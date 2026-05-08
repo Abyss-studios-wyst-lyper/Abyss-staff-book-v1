@@ -1,10 +1,16 @@
 const fetch = require("node-fetch");
 
-const WEBHOOK_URL = "https://discord.com/api/webhooks/1502218610729287791/4eO3ZJ2NlbwDu33TxJ5xJqr5cE2LKmoBJQheB77bOu67TH-vzCq31lmJ3FoHmMuLNukD";
+// The webhook URL is now pulled from Netlify's environment variables
+const WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
+  }
+
+  if (!WEBHOOK_URL) {
+    console.error("Missing DISCORD_WEBHOOK_URL environment variable");
+    return { statusCode: 500, body: "Server configuration error" };
   }
 
   try {
@@ -47,4 +53,3 @@ exports.handler = async (event) => {
     return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
   }
 };
-
