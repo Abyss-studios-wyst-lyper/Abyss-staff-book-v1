@@ -44,7 +44,9 @@ exports.handler = async (event) => {
     });
 
     if (!response.ok) {
-      throw new Error(`Discord API error: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error("Discord API Error Response:", errorText);
+      throw new Error(`Discord API error: ${response.status} ${response.statusText}`);
     }
 
     return { statusCode: 200, body: "OK" };
